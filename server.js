@@ -1,0 +1,21 @@
+const express=require('express');const cors=require('cors');const helmet=require('helmet');const fs=require('fs');const path=require('path');
+const app=express();const PORT=process.env.PORT||3000;const RATE=Number(process.env.NGN_PER_USD||1332);const ORDERS=path.join(__dirname,'data','orders.json');
+if(!fs.existsSync(ORDERS))fs.writeFileSync(ORDERS,'[]');
+app.use(helmet({contentSecurityPolicy:false}));app.use(cors());app.use(express.json());app.use(express.static(path.join(__dirname,'public')));
+const raw=[
+['Instagram','ig-followers','◎','Instagram Followers',1.99],['Instagram','ig-likes','♥','Instagram Likes',3.14],['Instagram','ig-views','▶','Instagram Views',0.59],['Instagram','ig-comments','◌','Instagram Comments',3],['Instagram','ig-auto-likes','↻','Instagram Auto Likes',19.99],['Instagram','ig-auto-views','↻','Instagram Auto Views',7.99],
+['TikTok','tt-followers','♪','TikTok Followers',3.99],['TikTok','tt-likes','♥','TikTok Likes',2.99],['TikTok','tt-views','▶','TikTok Views',1.99],['TikTok','tt-comments','◌','TikTok Comments',2.99],['TikTok','tt-auto-likes','↻','TikTok Auto Likes',19.99],['TikTok','tt-auto-views','↻','TikTok Auto Views',9.99],
+['YouTube','yt-subscribers','▶','YouTube Subscribers',1.99],['YouTube','yt-views','▶','YouTube Views',2.24],['YouTube','yt-likes','♥','YouTube Likes',2.99],['YouTube','yt-comments','◌','YouTube Comments',14.97],['YouTube','yt-watch-hours','◷','YouTube Watch Hours',39.97],
+['Facebook','fb-page-likes','f','Facebook Page Likes',3.99],['Facebook','fb-followers','f','Facebook Followers',3.99],['Facebook','fb-views','▶','Facebook Video Views',1.99],['Facebook','fb-comments','◌','Facebook Comments',3.99],
+['Spotify','sp-plays','●','Spotify Plays',1.49],['Spotify','sp-premium-plays','●','Spotify Premium Plays',2.99],['Spotify','sp-followers','●','Spotify Followers',1.49],['Spotify','sp-playlist-followers','♫','Spotify Playlist Followers',1.49],['Spotify','sp-saves','♡','Spotify Saves',1.49],['Spotify','sp-monthly-listeners','◔','Spotify Monthly Listeners',2.99],
+['SoundCloud','sc-plays','☁','SoundCloud Plays',1.49],['SoundCloud','sc-likes','♥','SoundCloud Likes',2.99],['SoundCloud','sc-followers','☁','SoundCloud Followers',2.99],['SoundCloud','sc-reposts','↗','SoundCloud Reposts',2.49],['SoundCloud','sc-comments','◌','SoundCloud Comments',3.99],['SoundCloud','sc-usa-plays','US','USA SoundCloud Plays',5.99],['SoundCloud','sc-usa-followers','US','USA SoundCloud Followers',4.99],['SoundCloud','sc-usa-likes','US','USA SoundCloud Likes',4.99],['SoundCloud','sc-usa-reposts','US','USA SoundCloud Reposts',4.99]
+];
+const services=raw.map(([platform,id,icon,name,usd])=>({platform,id,icon,name,priceUSD:usd,price:Math.ceil(usd*RATE/100)*100,unit:'starting package',description:`BRAVE ${name.toLowerCase()} service for public content or profiles.`}));
+const read=()=>JSON.parse(fs.readFileSync(ORDERS));const save=x=>fs.writeFileSync(ORDERS,JSON.stringify(x,null,2));
+app.get('/api/health',(req,res)=>res.json({status:'ok',application:'BRAVE Social Growth Platform'}));
+app.get('/api/services',(req,res)=>{const p=req.query.platform;res.json(p?services.filter(s=>s.platform.toLowerCase()===p.toLowerCase()):services)});
+app.get('/api/services/:id',(req,res)=>{const s=services.find(x=>x.id===req.params.id);s?res.json(s):res.status(404).json({error:'Service not found'})});
+app.post('/api/orders',(req,res)=>{const {serviceId,target,email,quantity=1,option='Standard'}=req.body;const s=services.find(x=>x.id===serviceId);if(!s)return res.status(400).json({error:'Invalid service'});if(!target||!email)return res.status(400).json({error:'Public URL and email are required'});const q=Math.max(1,Number(quantity)||1);const o={id:'BRV-'+Math.random().toString(36).slice(2,10).toUpperCase(),service:s.name,platform:s.platform,target,email,quantity:q,option,total:s.price*q,status:'pending',createdAt:new Date().toISOString()};const all=read();all.unshift(o);save(all);res.status(201).json({order:o})});
+app.get('/api/orders/:id',(req,res)=>{const o=read().find(x=>x.id===req.params.id);o?res.json(o):res.status(404).json({error:'Order not found'})});
+app.get('/{*splat}',(req,res)=>res.sendFile(path.join(__dirname,'public','index.html')));
+app.listen(PORT,()=>console.log(`BRAVE Social Growth Platform running on port ${PORT}`));
