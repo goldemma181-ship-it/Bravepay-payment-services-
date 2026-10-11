@@ -155,3 +155,13 @@ The app stores orders in `data/orders.json` (persisted in the Docker volume / Re
 
 Test the wiring without spending panel credit: run `node .freebuff/mock-panel.js 3901` (a tiny fake panel that completes orders after 3 s and enforces the Custom Comments `comments` requirement) and point `PANEL_API_URL=http://localhost:3901/api/v2` with any key and `PANEL_SERVICES` mapping. For the full automated proof, `node .freebuff/fb-comments-e2e.js` spins up the mock + a scratch server on an isolated data dir and asserts the whole chain: order → paid → forwarded **with comment texts** → auto-completed (6 checks; prints `ALL PASS` on success).
 # Bravepay-payment-services-
+## Screenshots
+
+### Home
+![Home page](screenshots/home.png)
+
+### Services
+![Services](screenshots/services.png)
+
+### FAQ
+![FAQ](screenshots/faq.png)
