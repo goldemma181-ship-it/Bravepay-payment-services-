@@ -165,3 +165,8 @@ Test the wiring without spending panel credit: run `node .freebuff/mock-panel.js
 
 ### FAQ
 ![FAQ](screenshots/faq.png)
+### Running in Docker
+![Docker container running](screenshots/docker-running.png)
+
+### Docker build
+![Docker build](screenshots/docker-build.png)
