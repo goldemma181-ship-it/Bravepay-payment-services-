@@ -1,0 +1,22 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Payment — BRAVE</title><link rel="stylesheet" href="/styles.css"></head><body>
+<header><div class="nav"><a class="logo" href="/">✦ <b>BRAVE</b></a><nav><a href="/#services">Services</a><a href="/track">Track order</a></nav><button onclick="location.href='/#services'">Get started</button></div></header>
+<div class="paycenter"><div id="box"><div class="spin"></div><p class="stat">Checking your payment…</p></div></div>
+<footer><div class="wrap foot"><div><a class="logo" href="/">✦ <b>BRAVE</b></a><p>Social growth services and creator tools.</p></div><div><b>Explore</b><a href="/#services">Services</a><a href="/track">Track an order</a><a href="/terms">Terms</a></div></div></footer>
+<script>
+const id=location.pathname.split('/').pop();
+function show(html){document.getElementById('box').innerHTML=html}
+function pill(s){return '<span class="pill st-'+s+'">'+s.replace(/_/g,' ')+'</span>'}
+function receipt(o){const p=o.payment||{};return '<div class="receipt"><table>'
++'<tr><td>Order</td><td>'+id+'</td></tr>'
++(o.service?'<tr><td>Service</td><td>'+o.service+(o.platform?' · '+o.platform:'')+'</td></tr>':'')
++(o.quantity?'<tr><td>Quantity</td><td>'+Number(o.quantity).toLocaleString('en-NG')+'</td></tr>':'')
++'<tr><td>Amount</td><td>₦'+Number(o.total||0).toLocaleString('en-NG')+'</td></tr>'
++(p.reference?'<tr><td>Reference</td><td style="font-weight:normal;font-size:11px">'+p.reference+'</td></tr>':'')
++'<tr><td>Status</td><td>'+pill(o.status)+'</td></tr>'
++'</table>'+(p.paidAt?'<small>Paid '+new Date(p.paidAt).toLocaleString('en-NG')+' via Paystack</small>':'')+'</div>'}
+function done(o){show('<p class="paysuccess">🎉</p><h2 style="margin:6px 0">Payment confirmed!</h2>'+receipt(o)+'<p class="stat">We\'ve started processing <b>'+o.service+'</b>. You can follow the progress anytime.</p><a class="btn" href="/track?id='+id+'">Track order →</a> <a class="btn ghost" href="/#services">Order more</a>')}
+function waiting(o){show('<div class="spin"></div><h2 style="margin:6px 0">Finishing up…</h2>'+receipt(o)+'<p class="stat">Waiting for Paystack to confirm payment for <b>'+id+'</b>.<br><small>Leave this page open — it updates automatically. You can also complete the payment and come back later.</small></p>')}
+async function tick(){try{const r=await fetch('/api/pay/status/'+id);if(!r.ok)return show('<h2>Order not found</h2><p class="stat">⚠ '+((await r.json()).error||'Check the link.')+'</p><a class="btn" href="/">← Back to home</a>');const d=await r.json();const o=d.order,p=o.payment||{};if(p.status==='paid')return done(o);if(p.paystackStatus==='abandoned')return show('<h2>Payment not completed</h2>'+receipt(o)+'<p class="stat">The Paystack transaction was abandoned — no money left your account. You can try again anytime.</p><a class="btn" href="/#services">← Back to services</a>');waiting(o)}catch(e){show('<p class="stat">Connection hiccup — retrying…</p>')}}
+tick();setInterval(tick,4000)
+</script>
+</body></html>

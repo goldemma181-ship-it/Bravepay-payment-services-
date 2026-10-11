@@ -1,0 +1,53 @@
+services:
+  - type: web
+    name: brave-social-growth
+    runtime: node
+    # Starter plan REQUIRED: the free tier has no persistent disk and wipes the
+    # filesystem when it spins down — real orders would be lost. For a throwaway
+    # demo you can switch plan to "free" and delete the "disk:" block below.
+    plan: starter
+    region: frankfurt   # closest region to Nigeria; oregon/singapore also work
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: TRUST_PROXY
+        value: "1"              # app runs behind Render's edge proxy — fixes https callback URLs & real client IPs
+      - key: ADMIN_TOKEN
+        generateValue: true          # Render creates a strong random token for you
+      - key: PUBLIC_BASE_URL
+        sync: false                  # set to your site URL, e.g. https://brave.onrender.com
+      - key: PAYSTACK_PUBLIC_KEY
+        sync: false                  # paste pk_live_… / pk_test_… in the Render dashboard
+      - key: PAYSTACK_SECRET_KEY
+        sync: false
+      - key: BANK_NAME
+        sync: false
+      - key: BANK_ACCOUNT_NAME
+        sync: false
+      - key: BANK_ACCOUNT_NUMBER
+        sync: false
+      - key: SMTP_HOST
+        value: smtp-relay.brevo.com
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        sync: false                  # your Brevo login email
+      - key: SMTP_PASS
+        sync: false                  # your Brevo SMTP key
+      - key: EMAIL_FROM
+        sync: false                  # e.g. "BRAVE <hello@yourdomain.com>" (must be a verified Brevo sender)
+      - key: OWNER_EMAIL
+        sync: false                  # where "new order" alerts go
+      - key: ADMIN_WEBHOOK_URL
+        sync: false                  # optional Telegram/WhatsApp/Make automation
+      - key: ADMIN_WEBHOOK_SECRET
+        sync: false
+      - key: NGN_PER_USD
+        sync: false                  # defaults to 1332
+    disk:
+      name: brave-data
+      mountPath: /data
+      sizeGB: 1

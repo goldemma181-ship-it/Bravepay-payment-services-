@@ -1,0 +1,58 @@
+services:
+  brave:
+    build: .
+    image: brave-social-growth
+    container_name: brave-social-growth
+    restart: unless-stopped
+    ports:
+      # host side is configurable: APP_PORT=8080 docker compose up -d
+      - "${APP_PORT:-3000}:3000"
+    environment:
+      # Admin auth — REQUIRED. Comma-separated tokens (16+ chars each), or set ADMIN_TOKEN for a single token.
+      - ADMIN_TOKENS=${ADMIN_TOKENS:-}
+      - ADMIN_TOKEN=${ADMIN_TOKEN:-}
+      - ADMIN_TOKEN_MIN_LENGTH=${ADMIN_TOKEN_MIN_LENGTH:-16}
+      # Rate limiting / lockout (persistent state lives in the volume)
+      - ADMIN_RATE_LIMIT=${ADMIN_RATE_LIMIT:-30}
+      - ADMIN_RATE_WINDOW_MS=${ADMIN_RATE_WINDOW_MS:-60000}
+      - ADMIN_LOCKOUT_MS=${ADMIN_LOCKOUT_MS:-300000}
+      # New-order webhook (optional) + its HMAC secret
+      - ADMIN_WEBHOOK_URL=${ADMIN_WEBHOOK_URL:-}
+      - ADMIN_WEBHOOK_SECRET=${ADMIN_WEBHOOK_SECRET:-}
+      # Set to 1 behind nginx/Caddy/Cloudflare so rate limiting sees real client IPs
+      - TRUST_PROXY=${TRUST_PROXY:-}
+      # NGN-per-USD conversion rate (default 1332)
+      - NGN_PER_USD=${NGN_PER_USD:-}
+      # Public URL (Paystack callbacks + email links), e.g. https://brave.example.com
+      - PUBLIC_BASE_URL=${PUBLIC_BASE_URL:-}
+      # Paystack keys — enable card/transfer/USSD checkout
+      - PAYSTACK_PUBLIC_KEY=${PAYSTACK_PUBLIC_KEY:-}
+      - PAYSTACK_SECRET_KEY=${PAYSTACK_SECRET_KEY:-}
+      # Bank details shown to customers at checkout
+      - BANK_NAME=${BANK_NAME:-}
+      - BANK_ACCOUNT_NAME=${BANK_ACCOUNT_NAME:-}
+      - BANK_ACCOUNT_NUMBER=${BANK_ACCOUNT_NUMBER:-}
+      # Email receipts via Brevo SMTP
+      - SMTP_HOST=${SMTP_HOST:-}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASS=${SMTP_PASS:-}
+      - EMAIL_FROM=${EMAIL_FROM:-}
+      - OWNER_EMAIL=${OWNER_EMAIL:-}
+      # Public order endpoint throttling
+      - ORDER_RATE_LIMIT=${ORDER_RATE_LIMIT:-}
+      - ORDER_RATE_WINDOW_MS=${ORDER_RATE_WINDOW_MS:-}
+      - ORDER_MAX_OPEN=${ORDER_MAX_OPEN:-}
+      # DATA_DIR is fixed to /data by the image — do not override here.
+    volumes:
+      # All persistent state: orders.json, admin-security.json, security.log
+      - brave-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:3000/api/health"]
+      interval: 30s
+      timeout: 4s
+      start_period: 5s
+      retries: 3
+
+volumes:
+  brave-data:

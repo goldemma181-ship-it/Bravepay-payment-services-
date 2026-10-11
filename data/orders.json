@@ -1,1 +1,149 @@
-[]
+[
+  {
+    "id": "BRV-5FB33F2E2E",
+    "serviceId": "ig-likes",
+    "service": "Instagram Likes",
+    "platform": "Instagram",
+    "target": "https://www.instagram.com/?hl=en",
+    "email": "goldemma181@gmail.com",
+    "quantity": 1000,
+    "option": "Standard",
+    "total": 4200,
+    "status": "pending",
+    "payment": {
+      "method": "paystack",
+      "status": "unpaid",
+      "reference": "BRV-BRV-5FB33F2E2E-mughbgsn"
+    },
+    "createdAt": "2026-09-25T04:47:07.451Z",
+    "history": [
+      {
+        "at": "2026-09-25T04:47:07.451Z",
+        "from": null,
+        "to": "pending",
+        "by": "customer"
+      }
+    ]
+  },
+  {
+    "id": "BRV-AC48AC1239",
+    "serviceId": "ig-followers",
+    "service": "Instagram Followers",
+    "platform": "Instagram",
+    "target": "https://www.instagram.com/?hl=en",
+    "email": "goldemma181@gmail.com",
+    "quantity": 1000,
+    "option": "Standard",
+    "total": 2700,
+    "status": "awaiting_payment",
+    "payment": {
+      "method": "bank_transfer",
+      "status": "unpaid"
+    },
+    "createdAt": "2026-09-25T04:46:42.424Z",
+    "history": [
+      {
+        "at": "2026-09-25T04:46:42.424Z",
+        "from": null,
+        "to": "awaiting_payment",
+        "by": "customer"
+      }
+    ]
+  },
+  {
+    "id": "BRV-E7D1974403",
+    "serviceId": "ig-followers",
+    "service": "Instagram Followers",
+    "platform": "Instagram",
+    "target": "https://instagram.com/min-test",
+    "email": "min-test@example.com",
+    "quantity": 50,
+    "option": "Standard",
+    "total": 135,
+    "status": "awaiting_payment",
+    "payment": {
+      "method": "bank_transfer",
+      "status": "unpaid"
+    },
+    "createdAt": "2026-09-22T05:23:50.249Z",
+    "history": [
+      {
+        "at": "2026-09-22T05:23:50.249Z",
+        "from": null,
+        "to": "awaiting_payment",
+        "by": "customer"
+      }
+    ]
+  },
+  {
+    "id": "BRV-D63DA434AB",
+    "serviceId": "ig-followers",
+    "service": "Instagram Followers",
+    "platform": "Instagram",
+    "target": "https://www.instagram.com/?hl=en",
+    "email": "goldemma181@gmail.com",
+    "quantity": 100,
+    "option": "Standard",
+    "total": 270,
+    "status": "pending",
+    "payment": {
+      "method": "paystack",
+      "status": "unpaid",
+      "reference": "BRV-BRV-D63DA434AB-muc7yyx0"
+    },
+    "createdAt": "2026-09-22T05:14:23.160Z",
+    "history": [
+      {
+        "at": "2026-09-22T05:14:23.160Z",
+        "from": null,
+        "to": "pending",
+        "by": "customer"
+      }
+    ]
+  },
+  {
+    "id": "BRV-1593686EBC",
+    "service": "Instagram Followers",
+    "platform": "Instagram",
+    "target": "https://www.instagram.com/?hl=en",
+    "email": "goldemma181@gmail.com",
+    "quantity": 100,
+    "option": "Standard",
+    "total": 270,
+    "status": "processing",
+    "payment": {
+      "method": "paystack",
+      "status": "paid",
+      "reference": "BRV-BRV-1593686EBC-muc6e0ao",
+      "paidAt": "2026-09-22T04:31:49.873Z"
+    },
+    "createdAt": "2026-09-22T04:30:05.560Z",
+    "history": [
+      {
+        "at": "2026-09-22T04:30:05.560Z",
+        "from": null,
+        "to": "pending",
+        "by": "customer"
+      },
+      {
+        "at": "2026-09-22T04:31:49.873Z",
+        "from": "pending",
+        "to": "processing",
+        "by": "paystack-verified"
+      },
+      {
+        "at": "2026-09-22T04:55:10.363Z",
+        "from": "processing",
+        "to": "completed",
+        "by": "admin@b48401fd@local"
+      },
+      {
+        "at": "2026-09-22T04:55:31.649Z",
+        "from": "completed",
+        "to": "processing",
+        "by": "admin@b48401fd@local"
+      }
+    ],
+    "updatedAt": "2026-09-22T04:55:31.649Z"
+  }
+]
